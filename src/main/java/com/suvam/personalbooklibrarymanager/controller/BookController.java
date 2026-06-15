@@ -2,13 +2,10 @@ package com.suvam.personalbooklibrarymanager.controller;
 
 import com.suvam.personalbooklibrarymanager.model.Book;
 import com.suvam.personalbooklibrarymanager.service.BookService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/books")
@@ -25,13 +22,38 @@ public class BookController {
         return "Book Library API is running";
     }
 
-    @GetMapping("/getBooks")
+    @GetMapping("")
     public Collection<Book> getAllBooks() {
-        return service.getALLBooks();
+        return service.getAllBooks();
     }
 
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable int id) {
+    public Book getBook(@PathVariable long id) {
         return service.getBook(id);
+    }
+
+    @PostMapping("")
+    public ResponseEntity<Void> addBook(@RequestBody Book book) {
+        service.addBook(book);
+        return ResponseEntity.status(201).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateBook(@PathVariable long id,
+                                           @RequestBody Book book) {
+        if (service.updateBook(id, book)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable long id) {
+        if (service.deleteBook(id)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
