@@ -28,8 +28,12 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public Book getBook(@PathVariable long id) {
-        return service.getBook(id);
+    public ResponseEntity<Book> getBook(@PathVariable long id) {
+        Book book = service.getBook(id);
+        if (book != null) {
+            return ResponseEntity.ok(book);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("")
@@ -55,5 +59,15 @@ public class BookController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Collection<Book>> searchBooks(@RequestParam(required = false) String author,
+                                                        @RequestParam(required = false) String genre) {
+        Collection<Book> result = service.searchBooks(author, genre);
+        if (result.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(result);
     }
 }

@@ -47,4 +47,20 @@ public class BookService {
             return false;
         }
     }
+
+    public Collection<Book> searchBooks(String author, String genre) {
+        return books.values() // gets all books
+                .stream() // Converts to stream
+                .filter(book -> { // Loops
+                    boolean matches = true;
+                    if (author != null) { // Only executes if author is not empty
+                        matches = matches && book.getAuthor().equalsIgnoreCase(author); // If author found then it returns true otherwise false
+                    }
+                    if (genre != null) { // Only executes if author is not empty
+                        matches = matches && book.getGenre().equalsIgnoreCase(genre); // If genre found then it returns true otherwise false
+                    }
+                    return matches; // If genre and author is found then returns true OTHERWISE false
+                })
+                .toList(); // returns author and genre
+    }
 }
